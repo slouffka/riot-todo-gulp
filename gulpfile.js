@@ -4,6 +4,7 @@ var gulp = require('gulp')
   , jade = require('jade')
   , gulpJade = require('gulp-jade')
   , less = require('gulp-less')
+  , stylus = require('gulp-stylus')
   , riot = require('gulp-riot')
   // , livereload = require('gulp-livereload')
   , http = require('http')
@@ -15,6 +16,7 @@ var gulp = require('gulp')
 var jadePath = 'client/src/views/*.jade'
   , tagPath = 'client/src/tags/*.tag'
   , lessPath = 'client/src/less/*.less'
+  , stylPath = 'client/src/styl/*.styl'
   , basePath = __dirname + '/client/public'
 ;
 
@@ -44,15 +46,25 @@ gulp.task('less', function() {
         // .pipe(livereload())
 });
 
+gulp.task('styl', function() {
+    gulp.src(stylPath)
+        .pipe(stylus())
+        .pipe(gulp.dest('client/public/css'));
+        // .pipe(livereload())
+});
+
+gulp.task('cook', ['jade', 'tag', 'less', 'styl']);
+
 gulp.task('watch', function() {
     // livereload.listen();
 
     gulp.watch(jadePath, ['jade']);
     gulp.watch(tagPath, ['tag']);
     gulp.watch(lessPath, ['less']);
+    gulp.watch(stylPath, ['styl']);
 });
 
-gulp.task('sync', function() {
+gulp.task('sync', ['cook', 'watch'], function() {
     browserSync({
         server: {
             baseDir: 'client/public'
@@ -62,9 +74,9 @@ gulp.task('sync', function() {
     gulp.watch(['*.html', 'js/*.js', 'css/*.css'], { cwd: 'client/public' }, reload);
 });
 
-gulp.task('serve', function(done) {
+gulp.task('serve', ['cook'], function(done) {
     var port = 3000;
-    var mount = st({ path: __dirname + '/client/public', index: 'index.html' })
+    var mount = st({ path: basePath, index: 'index.html' })
     http.createServer(function(req, res) {
         mount(req, res, function() {
             res.end('this is not a static file')
@@ -77,6 +89,4 @@ gulp.task('serve', function(done) {
     });
 });
 
-gulp.task('default', ['jade', 'tag', 'less', 'watch', 'sync'], function() {
-    // place code for default task here
-});
+gulp.task('default', ['serve']);
