@@ -53,14 +53,14 @@ gulp.task('styl', function() {
         // .pipe(livereload())
 });
 
-gulp.task('cook', ['jade', 'tag', 'less', 'styl']);
+gulp.task('cook', ['jade', 'tag', 'styl']);
 
 gulp.task('watch', function() {
     // livereload.listen();
 
     gulp.watch(jadePath, ['jade']);
     gulp.watch(tagPath, ['tag']);
-    gulp.watch(lessPath, ['less']);
+    // gulp.watch(lessPath, ['less']);
     gulp.watch(stylPath, ['styl']);
 });
 
@@ -74,7 +74,7 @@ gulp.task('sync', ['cook', 'watch'], function() {
     gulp.watch(['*.html', 'js/*.js', 'css/*.css'], { cwd: 'client/public' }, reload);
 });
 
-gulp.task('serve', ['cook'], function(done) {
+gulp.task('serve', ['cook', 'watch'], function(done) {
     var port = 3000;
     var mount = st({ path: basePath, index: 'index.html' })
     http.createServer(function(req, res) {

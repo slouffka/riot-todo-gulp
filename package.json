@@ -23,6 +23,7 @@
     "gulp-livereload": "^3.8.0",
     "gulp-riot": "^0.2.17",
     "gulp-stylus": "^2.0.5",
+    "gulp-traceur": "^0.17.1",
     "jade": "^1.11.0",
     "st": "^0.5.5"
   }
